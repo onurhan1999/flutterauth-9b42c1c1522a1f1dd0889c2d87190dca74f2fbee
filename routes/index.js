@@ -12,6 +12,8 @@ router.get('/dashboard', (req, res) => {
 
 router.post('/adduser',actions.addNew)
 router.post('/authenticate',actions.authenticate)
+router.post('/addAdvert',actions.addAdvert)
+
 router.get('/getinfo',actions.getinfo)
 
 
