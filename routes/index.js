@@ -10,11 +10,18 @@ router.get('/dashboard', (req, res) => {
     res.send('Dashboard')
 })
 
-router.post('/adduser',actions.addNew)
+
 router.post('/authenticate',actions.authenticate)
+
+router.post('/adduser',actions.addNew)
 router.post('/addAdvert',actions.addAdvert)
 
+router.post('/deleteAdvert',actions.deleteAdvert)
+
 router.get('/getinfo',actions.getinfo)
+
+
+router.get('/getData',actions.getData)
 
 
 module.exports = router
