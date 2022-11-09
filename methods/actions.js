@@ -147,12 +147,10 @@ var functions = {
                 })
             }else{
                 console.log(typeof info)
-
-                const myJson=JSON.stringify(info)
-                console.log(typeof myJson)
-
-                console.log(myJson)
-                res.status(200).send(info)
+                console.log(info)
+                res.status(200).json({
+                    data:info
+                })
             }
           })
     }
