@@ -58,10 +58,7 @@ var functions = {
             if (err) {
                 throw err
             }
-            if (!user) {
-                res.status(403).send({ succes: false, msg: 'Giriş başarısız. Kullanıcı bulunamadı.' })
-            }
-            else {
+            if (user) {
                 user.comparePassword(req.body.password, function (err, isMatch) {
                     if (isMatch && !err) {
                         var token = jwt.encode(user, config.secret)
@@ -71,6 +68,10 @@ var functions = {
                         return res.status(403).send({ succes: false, msg: 'Şifre hatalı!' })
                     }
                 })
+                
+            }
+            else {
+                res.status(403).send({ succes: false, msg: 'Giriş başarısız. Kullanıcı bulunamadı.' })
             }
         }
 
