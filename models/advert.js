@@ -22,6 +22,14 @@ var advertSchema=new Schema({
         type:String,
         require:true
     },
+    street:{
+        type:String,
+        require:true
+    },
+    numberOfRooms:{
+        type:String,
+        require:true
+    }
 })
 
 module.exports=mongoose.model('Advert',advertSchema)

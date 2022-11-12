@@ -85,7 +85,7 @@ var functions = {
         }
     },
     addAdvert: function (req, res) {
-        if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district)) {
+        if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district)|| (!req.body.numberOfRooms)|| (!req.body.street)) {
             console.log(req.body.title)
             console.log(req.body.description)
             console.log(req.body.price)
@@ -101,6 +101,8 @@ var functions = {
                 price: req.body.price,
                 province: req.body.province,
                 district: req.body.district,
+                street:req.body.street,
+                numberOfRooms:req.body.numberOfRooms
 
             });
             advert.save(function (err, advert) {
