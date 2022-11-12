@@ -41,7 +41,8 @@ var functions = {
                         console.log('kullanıcı yok bu adla')
 
                     }else{
-                        res.status(200).send({succes:false,msg:"Bu mail zaten kayıtlı!"})
+                        res.status(403).send({ succes: false, msg: 'Giriş başarısız. Kullanıcı bulunamadı.' })
+
                     }
                 }
             }           
