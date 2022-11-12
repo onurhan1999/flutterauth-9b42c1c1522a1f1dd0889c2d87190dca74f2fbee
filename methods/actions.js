@@ -24,7 +24,12 @@ var functions = {
                         password: req.body.password,
                         mail:req.body.mail
                     });
-                    if (!user) {
+                    if (user) {
+                        res.status(403).send({ succes: false, msg: 'Kayıt başarısız. Bu mail zaten kayıtlı.' })
+
+
+                    }else{
+
                         newUser.save(function (err, newUser) {
                             if (err) {
                                 console.log(err)
@@ -39,9 +44,6 @@ var functions = {
                             }
                         })
                         console.log('kullanıcı yok bu adla')
-
-                    }else{
-                        res.status(403).send({ succes: false, msg: 'Giriş başarısız. Kullanıcı bulunamadı.' })
 
                     }
                 }
