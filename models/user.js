@@ -7,6 +7,10 @@ var userSchema=new Schema({
         type:String,
         require:true
     },
+    mail:{
+        type:String,
+        require:true
+    },
     password:{
         type:String,
         require:true

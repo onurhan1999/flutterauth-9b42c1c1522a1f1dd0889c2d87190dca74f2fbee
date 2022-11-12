@@ -16,31 +16,32 @@ var functions = {
             if (err) {
                 throw err
             }else{
-                if ((!req.body.name) || (!req.body.password)) {
-                    res.json({ succes: false, msg: 'Enter all fields' })
+                if ((!req.body.name) || (!req.body.password)|| (!req.body.mail)) {
+                    res.json({ succes: false, msg: 'Boş alanları doldurun.' })
                 }else{
                     var newUser = User({
                         name: req.body.name,
-                        password: req.body.password
+                        password: req.body.password,
+                        mail:req.body.mail
                     });
                     if (!user) {
                         newUser.save(function (err, newUser) {
                             if (err) {
                                 console.log(err)
                                 res.json({
-                                    succes: false, msg: 'Failed to save'
+                                    succes: false, msg: 'Kayıt başarısız.'
                                 })
                             }
                             else {
                                 res.json({
-                                    succes: true, msg: 'Succesfuly saved'
+                                    succes: true, msg: 'Kayıt başarılı.'
                                 })
                             }
                         })
                         console.log('kullanıcı yok bu adla')
 
                     }else{
-                        res.status(200).send({succes:true,msg:"bu kullanıcı adı var"})
+                        res.status(200).send({succes:false,msg:"Bu mail zaten kayıtlı!"})
                     }
                 }
             }           
@@ -55,7 +56,7 @@ var functions = {
                 throw err
             }
             if (!user) {
-                res.status(403).send({ succes: false, msg: 'Auth Failed, user not found' })
+                res.status(403).send({ succes: false, msg: 'Giriş başarısız. Kullanıcı bulunamadı.' })
             }
             else {
                 user.comparePassword(req.body.password, function (err, isMatch) {
@@ -64,7 +65,7 @@ var functions = {
                         res.json({ succes: true, token: token })
                     }
                     else {
-                        return res.status(403).send({ succes: false, msg: 'Auth failed, wrong password' })
+                        return res.status(403).send({ succes: false, msg: 'Şifre hatalı!' })
                     }
                 })
             }
@@ -86,11 +87,6 @@ var functions = {
     },
     addAdvert: function (req, res) {
         if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district)|| (!req.body.numberOfRooms)|| (!req.body.street)) {
-            console.log(req.body.title)
-            console.log(req.body.description)
-            console.log(req.body.price)
-            console.log(req.body.province)
-            console.log(req.body.district)
 
             res.json({ succes: false, msg: 'Enter all fields' })
         }
@@ -109,12 +105,12 @@ var functions = {
                 if (err) {
                     console.log(err)
                     res.json({
-                        succes: false, msg: 'failed to advert save'
+                        succes: false, msg: 'İlan ekleme başarısız.'
                     })
                 }
                 else {
                     res.json({
-                        succes: true, msg: 'Advert succesfuly saved'
+                        succes: true, msg: 'İlan başarıyla eklendi.'
                     })
                 }
             })
@@ -127,12 +123,12 @@ var functions = {
         Advert.deleteOne({ name: "onurhan" }, function(err) {
             if (!err) {
                 res.json({
-                    succes: true, msg: 'Advert succesfuly saved'
+                    succes: true, msg: 'İlan başarıyla silindi.'
                 })
             }
             else {
                 res.json({
-                    succes: false, msg: 'failed to advert save'
+                    succes: false, msg: 'İlan silme başarısız.'
                 })
             }
         });
@@ -145,7 +141,7 @@ var functions = {
         connection.collection("adverts").find({}).toArray(function (err, info) {
             if(err){
                 res.json({
-                    succes: false, msg: 'Failed to getData'
+                    succes: false, msg: 'getData fonksiyonu başarısız oldu.'
                 })
             }else{
                 console.log(typeof info)
