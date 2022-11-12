@@ -53,7 +53,7 @@ var functions = {
 
     authenticate: function (req, res) {
         User.findOne({
-            name: req.body.name
+            mail: req.body.mail
         }, function (err, user) {
             if (err) {
                 throw err
