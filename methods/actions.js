@@ -52,6 +52,8 @@ var functions = {
     },
 
     authenticate: function (req, res) {
+        
+    
         User.findOne({
             mail: req.body.mail
         }, function (err, user) {
@@ -62,7 +64,7 @@ var functions = {
                 user.comparePassword(req.body.password, function (err, isMatch) {
                     if (isMatch && !err) {
                         var token = jwt.encode(user, config.secret)
-                        res.json({ succes: true, token: token })
+                        res.json({ succes: true, token: token ,name:user.name,})
                     }
                     else {
                         return res.status(403).send({ succes: false, msg: 'Şifre hatalı!' })
@@ -155,7 +157,11 @@ var functions = {
                 })
             }
           })
-    }
+    },
+
+
+   
+
 
 }
 
