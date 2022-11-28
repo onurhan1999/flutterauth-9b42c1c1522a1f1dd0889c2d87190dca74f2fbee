@@ -22,6 +22,6 @@ router.get('/getinfo',actions.getinfo)
 
 
 router.get('/getData',actions.getData)
-
+router.get('/getDataWithFilter',actions.getDataWithFilter)
 
 module.exports = router
