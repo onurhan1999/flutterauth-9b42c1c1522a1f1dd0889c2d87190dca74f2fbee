@@ -162,15 +162,23 @@ var functions = {
     },
 
     getDataWithFilter: function (req, res) {
+        console.log("getdatawithfilter")
+    
+        console.log(req.query.province)
+        console.log(req.query.district)
+        console.log(req.query.numberOfRooms)
+
         connection = mongoose.connection;
 
-        if (req.body.province && req.body.district && req.body.numberOfRooms) {
+        if (req.query.province && req.query.district && req.query.numberOfRooms) {
+            console.log("HEM İL HEM İLÇE HEM DE ODA SAYISI VARSA")
+
             //HEM İL HEM İLÇE HEM DE ODA SAYISI VARSA
             connection.collection("adverts").find({
 
-                province: req.body.province,
-                district: req.body.district,
-                numberOfRooms: req.body.numberOfRooms
+                province: req.query.province,
+                district: req.query.district,
+                numberOfRooms: req.query.numberOfRooms
 
 
             }).toArray(function (err, info) {
@@ -185,15 +193,16 @@ var functions = {
                     })
                 }
             })
-        } else if (req.body.province && req.body.district && !req.body.numberOfRooms) {
+        } else if (req.query.province && req.query.district && !req.query.numberOfRooms) {
+            
             console.log("SADECE İL VE İLÇE VARSA ODA YOKSA")
-            console.log(req.body.province)
-            console.log(req.body.district)
+            console.log(req.query.province)
+            console.log(req.query.district)
             //SADECE İL VE İLÇE VARSA ODA YOKSA
             connection.collection("adverts").find({
 
-                province: req.body.province,
-                district: req.body.district,
+                province: req.query.province,
+                district: req.query.district,
                 
             }).toArray(function (err, info) {
                 if(err){
@@ -210,11 +219,13 @@ var functions = {
                 }
               })
 
-        } else if (req.body.province && !req.body.district && !req.body.numberOfRooms) {
+        } else if (req.query.province && !req.query.district && !req.query.numberOfRooms) {
+            console.log("SADECE İL VARSA İLÇE VE ODA YOKSA")
+
             //SADECE İL VARSA İLÇE VE ODA YOKSA
             connection.collection("adverts").find({
         
-                province: req.body.province,
+                province: req.query.province,
                 
               
                 
@@ -234,12 +245,13 @@ var functions = {
                 }
               })
         }
-        else if (req.body.province && !req.body.district && req.body.numberOfRooms) {
+        else if (req.query.province && !req.query.district && req.query.numberOfRooms) {
+            console.log("SADECE İL VARSA VE ODA VARSA")
             //SADECE İL VARSA VE ODA VARSA
             connection.collection("adverts").find({
         
-                province: req.body.province,
-                numberOfRooms: req.body.numberOfRooms,
+                province: req.query.province,
+                numberOfRooms: req.query.numberOfRooms,
               
                 
     
@@ -258,11 +270,13 @@ var functions = {
                 }
               })
         }
-        else if (!req.body.province && !req.body.district && req.body.numberOfRooms) {
+        else if (!req.query.province && !req.query.district && req.query.numberOfRooms) {
+            console.log("İL VE İLçE YOK SADECE ODA VAR")
+
             //İL VE İLçE YOK SADECE ODA VAR
             connection.collection("adverts").find({
         
-                numberOfRooms: req.body.numberOfRooms,
+                numberOfRooms: req.query.numberOfRooms,
                 
               
                 
@@ -283,6 +297,8 @@ var functions = {
               })
 
         } else {
+            console.log("HİÇBİRİ YOKSA BÜTÜN DATALARI GÖNDERİR")
+
             //HİÇBİRİ YOKSA BÜTÜN DATALARI GÖNDERİR
             connection.collection("adverts").find({}).toArray(function (err, info) {
                 if(err){
