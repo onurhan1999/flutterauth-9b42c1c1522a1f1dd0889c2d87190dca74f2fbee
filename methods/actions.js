@@ -1,5 +1,6 @@
 var User = require('../models/user')
 const Advert = require("../models/advert");
+const Message = require("../models/message");
 
 var jwt = require('jwt-simple')
 var config = require('../config/dbconfig')
@@ -92,7 +93,7 @@ var functions = {
         }
     },
     addAdvert: function (req, res) {
-        if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district) || (!req.body.numberOfRooms) || (!req.body.street)) {
+        if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district) || (!req.body.numberOfRooms) || (!req.body.street)||(!req.body.isFavourite)) {
 
             res.json({ succes: false, msg: 'Enter all fields' })
         }
@@ -104,7 +105,8 @@ var functions = {
                 province: req.body.province,
                 district: req.body.district,
                 street: req.body.street,
-                numberOfRooms: req.body.numberOfRooms
+                numberOfRooms: req.body.numberOfRooms,
+                isFavourite:req.body.isFavourite
 
             });
             advert.save(function (err, advert) {
@@ -142,7 +144,96 @@ var functions = {
 
     },
 
+    updateAdvertsFavField: function (req, res) {
+        var favBool;
+
+        if(req.body.isFavourite=="true"){
+            favBool=true;
+        }else{
+            favBool=false;
+
+        }
+
+
+        Advert.updateOne({ _id: req.body._id }, { $set: {isFavourite: favBool}},{upsert:false} ,function (err) {
+            if (!err) {
+                res.json({
+                    succes: true, msg: 'Favori güncellemesi başarılı.'
+                })
+            }
+            else {
+                res.json({
+                    succes: false, msg: 'Favori güncellemesi başarısız.'
+                })
+            }
+        });
+
+    },
+
     getData: function (req, res) {
+        connection = mongoose.connection;
+
+        connection.collection("adverts").find({
+        }).toArray(function (err, info) {
+            if (err) {
+                res.json({
+                    succes: false, msg: 'getData fonksiyonu başarısız oldu.'
+                })
+            } else {
+                res.status(200).json({
+                    data: info
+                })
+            }
+        })
+    },
+
+
+    sendMessage: function (req, res) {
+        if ((!req.body.from) || (!req.body.to) || (!req.body.message) || (!req.body.sendAt)) {
+
+            res.json({ succes: false, msg: 'Enter all fields' })
+        }
+        else {
+            var message = new Message({
+                from: req.body.from,
+                to: req.body.to,
+                message: req.body.message,
+                sendAt: req.body.sendAt ,
+            });
+            message.save(function (err, message) {
+                if (err) {
+                    console.log(err)
+                    res.json({
+                        succes: false, msg: 'Mesaj gönderilemedi.'
+                    })
+                }
+                else {
+                    res.json({
+                        succes: true, msg: 'Mesaj başarıyla eklendi.'
+                    })
+                }
+            })
+        }
+    },
+
+    getMessages: function (req, res) {
+        connection = mongoose.connection;
+
+        connection.collection("messages").find({
+        }).toArray(function (err, info) {
+            if (err) {
+                res.json({
+                    succes: false, msg: 'getData fonksiyonu başarısız oldu.'
+                })
+            } else {
+                res.status(200).json({
+                    data: info
+                })
+            }
+        })
+    },
+
+    getMessageByUser: function (req, res) {
         connection = mongoose.connection;
 
         connection.collection("adverts").find({
@@ -161,6 +252,12 @@ var functions = {
         })
     },
 
+
+
+
+
+
+
     getDataWithFilter: function (req, res) {
         console.log("getdatawithfilter")
     
@@ -178,7 +275,8 @@ var functions = {
 
                 province: req.query.province,
                 district: req.query.district,
-                numberOfRooms: req.query.numberOfRooms
+                numberOfRooms: req.query.numberOfRooms,
+              
 
 
             }).toArray(function (err, info) {

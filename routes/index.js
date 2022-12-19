@@ -17,11 +17,18 @@ router.post('/adduser',actions.addNew)
 router.post('/addAdvert',actions.addAdvert)
 
 router.post('/deleteAdvert',actions.deleteAdvert)
+router.post('/updateAdvertsFavField',actions.updateAdvertsFavField)
+
 
 router.get('/getinfo',actions.getinfo)
 
 
 router.get('/getData',actions.getData)
 router.get('/getDataWithFilter',actions.getDataWithFilter)
+
+router.get('/sendMessage',actions.sendMessage)
+router.get('/getMessages',actions.getMessages)
+router.get('/getMessageByUser',actions.getMessageByUser)
+
 
 module.exports = router
