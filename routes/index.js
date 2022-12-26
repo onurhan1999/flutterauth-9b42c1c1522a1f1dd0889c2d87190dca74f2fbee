@@ -1,5 +1,5 @@
 const express = require('express')
-const actions=require('../methods/actions')
+const actions= require('../methods/actions')
 const router = express.Router()
 
 router.get('/', (req, res) => {
@@ -19,12 +19,15 @@ router.post('/addAdvert',actions.addAdvert)
 router.post('/deleteAdvert',actions.deleteAdvert)
 router.post('/updateAdvertsFavField',actions.updateAdvertsFavField)
 
-
-router.get('/getinfo',actions.getinfo)
+router.get('/getUserInfo',actions.getUserInfo)
 
 
 router.get('/getData',actions.getData)
 router.get('/getDataWithFilter',actions.getDataWithFilter)
+router.post('/addFavAdvert',actions.addFavAdvert)
+
+router.get('/getFavAdverts',actions.getFavAdverts)
+
 
 router.get('/sendMessage',actions.sendMessage)
 router.get('/getMessages',actions.getMessages)

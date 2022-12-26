@@ -14,7 +14,12 @@ var userSchema=new Schema({
     password:{
         type:String,
         require:true
+    },
+    favList:{
+        type:Array,
+        require:true
     }
+
 })
 
 userSchema.pre('save',function(next){

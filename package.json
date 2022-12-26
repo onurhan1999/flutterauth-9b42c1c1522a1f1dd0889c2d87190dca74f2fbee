@@ -10,8 +10,9 @@
   "author": "Onurhan",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.20.1",
     "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "collections": "^5.1.13",
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
@@ -22,7 +23,7 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "passport": "^0.6.0",
-    "passport-jwt": "^4.0.0", 
+    "passport-jwt": "^4.0.0",
     "routes": "^2.1.0"
   }
 }
