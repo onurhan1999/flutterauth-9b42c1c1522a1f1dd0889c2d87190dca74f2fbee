@@ -1,19 +1,17 @@
 var User = require('../models/user')
+var Admin = require('../models/admin')
 const Advert = require("../models/advert");
 const Message = require("../models/message");
-
 var jwt = require('jwt-simple')
 var config = require('../config/dbconfig')
 const { authenticate } = require('passport')
 var List = require("collections/list");
-
-
 var ObjectId = require('mongodb').ObjectId;
-
-
-
 var mongoose = require('mongoose');
-
+const multer =require('multer')
+const GridFsStorage=require('multer-gridfs-storage')
+const GridStream=require('gridfs-stream')
+const crypto=require('crypto')
 
 var functions = {
 
@@ -38,6 +36,74 @@ var functions = {
                     });
                     if (user) {
                         res.status(403).send({ succes: false, msg: 'Kayıt başarısız. Bu mail zaten kayıtlı.' })
+                    } else {
+                        newUser.save(function (err, newUser) {
+                            if (err) {
+                                console.log(err)
+                                res.json({
+                                    succes: false, msg: 'Kayıt başarısız.'
+                                })
+                            }
+                            else {
+                                res.json({
+                                    succes: true, msg: 'Kayıt başarılı.'
+                                })
+                            }
+                        })
+                        console.log('kullanıcı yok bu adla')
+                    }
+                }
+            }
+        })
+    },
+
+    authenticate: function (req, res) {
+        User.findOne({
+            mail: req.body.mail
+        }, function (err, user) {
+            if (err) {
+                throw err
+            }
+            if (user) {
+                user.comparePassword(req.body.password, function (err, isMatch) {
+                    if (isMatch && !err) {
+                        var token = jwt.encode(user, config.secret)
+                        res.json({ succes: true, token: token, name: user.name, })
+                    }
+                    else {
+                        return res.status(403).send({ succes: false, msg: 'Şifre hatalı!' })
+                    }
+                })
+            }
+            else {
+                res.status(403).send({ succes: false, msg: 'Giriş başarısız. Kullanıcı bulunamadı.' })
+            }
+        }
+
+        )
+    },
+
+
+    adminAddNew: function (req, res) {
+        Admin.findOne({
+            mail: req.body.mail
+        }, function (err, admin) {
+            var array = [];
+
+            if (err) {
+                throw err
+            } else {
+                if ((!req.body.name) || (!req.body.password) || (!req.body.mail)) {
+                    res.json({ succes: false, msg: 'Boş alanları doldurun.' })
+                } else {
+
+                    var newUser = Admin({
+                        name: req.body.name,
+                        password: req.body.password,
+                        mail: req.body.mail,
+                    });
+                    if (admin) {
+                        res.status(403).send({ succes: false, msg: 'Kayıt başarısız. Bu mail zaten kayıtlı.' })
 
 
                     } else {
@@ -55,7 +121,7 @@ var functions = {
                                 })
                             }
                         })
-                        console.log('kullanıcı yok bu adla')
+                        console.log('kullanısscı yok bu adla')
 
                     }
                 }
@@ -63,20 +129,19 @@ var functions = {
         })
     },
 
-    authenticate: function (req, res) {
 
-
-        User.findOne({
+    adminAuthenticate: function (req, res) {
+        Admin.findOne({
             mail: req.body.mail
-        }, function (err, user) {
+        }, function (err, admin) {
             if (err) {
                 throw err
             }
-            if (user) {
-                user.comparePassword(req.body.password, function (err, isMatch) {
+            if (admin) {
+                admin.comparePassword(req.body.password, function (err, isMatch) {
                     if (isMatch && !err) {
-                        var token = jwt.encode(user, config.secret)
-                        res.json({ succes: true, token: token, name: user.name, })
+                        var token = jwt.encode(admin, config.secret)
+                        res.json({ succes: true, token: token, name: admin.name, })
                     }
                     else {
                         return res.status(403).send({ succes: false, msg: 'Şifre hatalı!' })
@@ -124,7 +189,7 @@ var functions = {
 
 
     addAdvert: function (req, res) {
-        if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district) || (!req.body.numberOfRooms) || (!req.body.street) || (!req.body.isFavourite)) {
+        if ((!req.body.title) || (!req.body.description) || (!req.body.price) || (!req.body.province) || (!req.body.district) || (!req.body.numberOfRooms) || (!req.body.street)) {
 
             res.json({ succes: false, msg: 'Enter all fields' })
         }
@@ -137,8 +202,6 @@ var functions = {
                 district: req.body.district,
                 street: req.body.street,
                 numberOfRooms: req.body.numberOfRooms,
-                isFavourite: req.body.isFavourite
-
             });
             advert.save(function (err, advert) {
                 if (err) {
@@ -178,7 +241,7 @@ var functions = {
     updateAdvertsFavField: function (req, res) {
         console.log("updateAdvertsFavField")
         connection = mongoose.connection;
-        connection.collection("users").find({ $and: [ { favList: req.body.advertId }, { _id: ObjectId(req.body.userId) } ] }).toArray(function (err, info) {
+        connection.collection("users").find({ $and: [{ favList: req.body.advertId }, { _id: ObjectId(req.body.userId) }] }).toArray(function (err, info) {
 
             if (err) {
                 res.json({
@@ -367,7 +430,7 @@ var functions = {
             idArray.push(ObjectId(array))
 
 
-          connection.collection("adverts").find({ _id: { "$in": idArray }, }).toArray(function (err, info) {
+            connection.collection("adverts").find({ _id: { "$in": idArray }, }).toArray(function (err, info) {
 
                 if (err) {
                     res.json({
@@ -377,7 +440,7 @@ var functions = {
                 } else {
                     console.log(info)
                     res.status(200).json({
-                        success:true,
+                        success: true,
                         data: info
                     })
                 }
@@ -410,12 +473,12 @@ var functions = {
                 } else {
                     console.log(info)
                     res.status(200).json({
-                        success:true,
+                        success: true,
                         data: info
                     })
                 }
             })
-    
+
 
         }
 
@@ -425,7 +488,7 @@ var functions = {
 
 
         //bir string listesi göndereceğim ve bu listeyi foreach ile dönüp her elemanını objarraye ekleyeceğiz ve bunu da aşağıdaki gibi aratacağız
-       
+
 
     },
 

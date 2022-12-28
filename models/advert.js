@@ -30,10 +30,6 @@ var advertSchema=new Schema({
         type:String,
         require:true
     },
-    isFavourite:{
-        type:Boolean,
-        require:true
-    },
 })
 
 module.exports=mongoose.model('Advert',advertSchema)
