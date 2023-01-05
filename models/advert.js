@@ -1,6 +1,5 @@
 var mongoose=require('mongoose')
 var Schema=mongoose.Schema;
-
 var advertSchema=new Schema({
     title:{
         type:String,
@@ -31,5 +30,4 @@ var advertSchema=new Schema({
         require:true
     },
 })
-
 module.exports=mongoose.model('Advert',advertSchema)

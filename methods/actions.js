@@ -8,14 +8,25 @@ const { authenticate } = require('passport')
 var List = require("collections/list");
 var ObjectId = require('mongodb').ObjectId;
 var mongoose = require('mongoose');
-const multer =require('multer')
-const GridFsStorage=require('multer-gridfs-storage')
-const GridStream=require('gridfs-stream')
-const crypto=require('crypto')
+
+
+
+
 
 var functions = {
 
-    addNew: function (req, res) {
+   
+
+
+   
+
+
+
+
+
+
+
+    addUser: function (req, res) {
         User.findOne({
             mail: req.body.mail
         }, function (err, user) {
@@ -50,7 +61,6 @@ var functions = {
                                 })
                             }
                         })
-                        console.log('kullanıcı yok bu adla')
                     }
                 }
             }
@@ -221,8 +231,6 @@ var functions = {
 
 
     deleteAdvert: function (req, res) {
-        console.log(req.body._id)
-        console.log(req.body.name)
         Advert.deleteOne({ _id: req.body._id }, function (err) {
             if (!err) {
                 res.json({
@@ -239,7 +247,6 @@ var functions = {
     },
 
     updateAdvertsFavField: function (req, res) {
-        console.log("updateAdvertsFavField")
         connection = mongoose.connection;
         connection.collection("users").find({ $and: [{ favList: req.body.advertId }, { _id: ObjectId(req.body.userId) }] }).toArray(function (err, info) {
 
@@ -254,8 +261,6 @@ var functions = {
                 if (info.length == 0) {
                     // değer listede olmadığı için değeri listeye ekleyeceğiz burada
                     connection.collection("users").findOneAndUpdate({ _id: ObjectId(req.body.userId), }, { $push: { favList: req.body.advertId } }, { upsert: false }, function (err) {
-                        console.log("findoneandupdate için")
-
                         if (!err) {
                             res.json({
                                 succes: true, msg: 'Favori eklemesi başarılı.'
@@ -267,10 +272,7 @@ var functions = {
                             })
                         }
                     });
-
-
                 } else {
-
                     connection.collection("users").findOneAndUpdate({ _id: ObjectId(req.body.userId), }, { $pull: { favList: req.body.advertId } }, function (err) {
                         console.log("findoneandupdate için")
 
@@ -285,13 +287,7 @@ var functions = {
                             })
                         }
                     });
-
-
-
-                    //değer listede var olduğu için değeri listeden çıkaracağız
                 }
-
-
             }
         })
 
@@ -391,47 +387,17 @@ var functions = {
 
 
 
-    addFavAdvert: function (req, res) {
-
-        var list = new List([]);
-        var array = [];
-        array.push("senden");
-        console.log(array[0])
-        connection = mongoose.connection;
-        User.updateOne({ _id: req.body.userId }, { $push: { favList: req.body.advertId } }, { upsert: false }, function (err) {
-
-
-
-            if (!err) {
-                res.json({
-                    succes: true, msg: 'Favori eklemesi başarılı.'
-                })
-            }
-            else {
-                res.json({
-                    succes: false, msg: 'Favori eklemesi başarısız.'
-                })
-            }
-        });
-    },
-
 
     getFavAdverts: function (req, res) {
         connection = mongoose.connection;
-        //var array=req.body.list
-
         console.log("getFavAdverts")
         var array = []
         var idArray = [];
-
         array = req.query.list;
 
         if (typeof array == "string") {
             idArray.push(ObjectId(array))
-
-
             connection.collection("adverts").find({ _id: { "$in": idArray }, }).toArray(function (err, info) {
-
                 if (err) {
                     res.json({
                         success: false,
@@ -445,24 +411,15 @@ var functions = {
                     })
                 }
             })
-
         } else if (typeof array == "undefined") {
-
             res.json({
                 success: false,
                 msg: 'Liste boş.',
             })
-
         } else {
-
-
             array.forEach(element => {
                 idArray.push(ObjectId(element))
             });
-
-
-
-
             connection.collection("adverts").find({ _id: { "$in": idArray }, }).toArray(function (err, info) {
 
                 if (err) {
@@ -478,8 +435,6 @@ var functions = {
                     })
                 }
             })
-
-
         }
 
 
@@ -500,7 +455,6 @@ var functions = {
         connection = mongoose.connection;
         if (req.query.province && req.query.district && req.query.numberOfRooms) {
             console.log("HEM İL HEM İLÇE HEM DE ODA SAYISI VARSA")
-
             //HEM İL HEM İLÇE HEM DE ODA SAYISI VARSA
             connection.collection("adverts").find({
                 province: req.query.province,
@@ -616,6 +570,15 @@ var functions = {
             })
         }
     },
+
+
+
+    
+
+
+
+    
+    
 
 }
 
